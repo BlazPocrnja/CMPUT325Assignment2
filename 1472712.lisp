@@ -5,9 +5,8 @@
             (let ( (f (car E))  (arg (cdr E)) )
                 (cond 
                     ; handle built-in functions
-                    ((eq f 'if)  (if (car arg) (fl-interp (cadr arg) P) (fl-interp (caddr arg) P) ) )
+                    ((eq f 'if)  (if (fl-interp (cadr arg) P) (fl-interp (cadr arg) P) (fl-interp (caddr arg) P)))
                     ((eq f 'first)  (car (fl-interp (car arg) P)))
-                
 	       
         	        ; if f is a user-defined function,
                         ;    then evaluate the arguments 
