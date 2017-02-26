@@ -7,6 +7,7 @@
                     ; handle built-in functions
                     ((eq f 'if)  (if (fl-interp (car arg) P) (fl-interp (cadr arg) P) (fl-interp (caddr arg) P)))
                     ((eq f 'null) (null (fl-interp (car arg) P)))
+                    ((eq f 'atom) (atom (fl-interp (car arg) P)))
                     ((eq f 'first)  (car (fl-interp (car arg) P)))
 	       
         	        ; if f is a user-defined function,
