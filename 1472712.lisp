@@ -28,9 +28,9 @@
                         ;    then evaluate the arguments 
                         ;         and apply f to the evaluated arguments 
                         ;             (applicative order reduction) 
-                    ((is_defined f arg P) 
-                        (
-
+                    ((is_defined f arg P)
+                        (let ( (definition (is_defined f arg P)) ) 
+                            (fl-interp (reduce_body (cdr (function_header definition)) (evaluate_args arg P) (function_body definition)) P)
                         )
                     )
 
@@ -46,8 +46,41 @@
 (defun is_defined (f arg P)
     (cond 
         ((null P) nil)
-        ((and (eq f (caar P)) (= (list_length arg) (list_length (cdr (function_header (car P)))))) t)
+        ((and (eq f (caar P)) (= (list_length arg) (list_length (cdr (function_header (car P)))))) (car P))
         (t (is_defined f arg (cdr P)))
+    )
+)
+
+(defun evaluate_args (arg P)
+    (cond 
+        ((null arg) nil)
+        (t (cons (fl-interp (car arg) P) (evaluate_args (cdr arg) P)))
+    )
+)
+
+(defun reduce_body (n v body)
+    (cond
+        ((null body) nil)
+        ((or (null n) (null v)) body)
+        ((not (atom (car body))) (cons (reduce_body n v (car body)) (reduce_body n v (cdr body))))
+        ((xmember n (car body)) (cons (find_value (car body) n v) (reduce_body n v (cdr body))))
+        (t (cons (car body) (reduce_body n v (cdr body))))
+    )
+)
+
+(defun xmember (X Y)
+    (cond 
+        ((null X) nil)
+        ((equal (car X) Y) t)
+        (t (xmember (cdr X) Y))
+    )
+)
+
+(defun find_value (x n v)
+    (cond
+        ((null n) nil)
+        ((equal x (car n)) (car v))
+        (t (find_value x (cdr n) (cdr v)))
     )
 )
 
