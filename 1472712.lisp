@@ -28,6 +28,11 @@
                         ;    then evaluate the arguments 
                         ;         and apply f to the evaluated arguments 
                         ;             (applicative order reduction) 
+                    ((is_defined f arg P) 
+                        (
+
+                        )
+                    )
 
                     ; otherwise f is undefined; in this case,
                     ; E is returned as if it is quoted in lisp
@@ -36,4 +41,32 @@
             )
         )
     )            
+)
+
+(defun is_defined (f arg P)
+    (cond 
+        ((null P) nil)
+        ((and (eq f (caar P)) (= (list_length arg) (list_length (cdr (function_header (car P)))))) t)
+        (t (is_defined f arg (cdr P)))
+    )
+)
+
+(defun list_length (L)
+    (cond 
+        ((null L) 0)
+        (t (+ 1 (list_length (cdr L))))
+    )
+)
+
+(defun function_header (DEF)
+    (cond 
+        ((eq (car DEF) '=) nil)
+        (t (cons (car DEF) (function_header (cdr DEF))))
+    )
+)
+(defun function_body (DEF)
+    (cond
+        ((eq (car DEF) '=) (cadr DEF))
+        (t (function_body (cdr DEF)))
+    )
 )
